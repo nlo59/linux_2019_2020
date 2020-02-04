@@ -1,0 +1,38 @@
+#!/bin/bash
+
+recherche()
+{
+if [ "${pays,,}" == "afrique" ] || [ "${pays,,}" == "amerique" ] || [ "${pays,,}" == "asie" ] || [ "${pays,,}" == "europe" ] || [ "${pays,,}" == "oceanie" ] 
+	then 
+		echo $pays "est un continent"
+		read -p "Tapez un pays: " pays
+		recherche
+else 
+	var2=$(psql monde1 -c "select * from PAYS where lower(NOM)='${pays,,}';")
+	if [ '$var2' ]
+	then
+		echo "$var2"
+	else
+		echo $pays "n'est pas un pays"
+		read -p "Voulez-vous recommencer(o/n)?" rep
+		if [ "$rep" == "o" ]
+		then
+			read -p "Quel pays recherchez-vous? " pays
+			echo "$var2"
+			recherche
+		else
+			echo "AU REVOIR!!!"
+		fi
+	fi
+fi
+}
+
+if [ -z $1 ]
+then
+	read -p "Quel pays recherchez-vous? " pays 
+else
+	pays=$1
+fi
+pays=${pays,,}
+recherche
+
